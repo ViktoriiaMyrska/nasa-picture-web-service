@@ -4,13 +4,16 @@ import com.vikmir.nasa.model.GetPicturesResponse;
 import com.vikmir.nasa.model.Photo;
 import com.vikmir.nasa.model.PhotoParams;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Comparator;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class PictureService {
@@ -23,6 +26,7 @@ public class PictureService {
 
     private final RestTemplate restTemplate;
 
+    @Cacheable("largestNasaPicture")
     public String getLargestPictureUrl(Integer sol) {
         GetPicturesResponse response = restTemplate.getForObject(buildUrl(sol), GetPicturesResponse.class);
         assert response != null;
@@ -33,8 +37,8 @@ public class PictureService {
                 .max(Comparator.comparing(PhotoParams::size))
                 .orElseThrow();
 
-        System.out.println("img src: " + params.imgSrc());
-        System.out.println("img size: " + params.size());
+        log.info("img src: " + params.imgSrc());
+        log.info("img size: " + params.size());
         return params.imgSrc();
     }
 
