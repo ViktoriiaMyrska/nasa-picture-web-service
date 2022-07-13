@@ -1,3 +1,3 @@
 HOMEWORK #16 Build the largest NASA picture web service.
 
-HOMEWORK #17 Add caching.
+HOMEWORK #17 Add caching. Add actuator.
